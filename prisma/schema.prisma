@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// CREATE TABLE USER
+model User {
+  id        String  @id @default(uuid()) // ID diubah ke String dengan UUID
+  email     String  @unique
+  password  String
+  role      String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+
+// CREATE TABLE LECTURE
+model Lecturer {
+  id                 Int           @id @default(autoincrement())
+  fullName           String
+  email              String        @unique
+  nidn               String        @unique
+  department         String
+  faculty            String
+  position           String
+  status             Status
+  nationality        String
+  passportNumber     String        @unique
+  visaStatus         String
+  institutionOrigin  String
+  profilePicture     String?
+  languageProficiency LanguageProficiency[]
+  education         Education[]
+  experience        Experience[]
+  researchInterest  String?
+  publications      Publication[]
+  projects          Project[]
+  awards            Award[]
+  coursesTaught     Course[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+model LanguageProficiency {
+  id     Int     @id @default(autoincrement())
+  lang   String
+  lecturerId Int
+  lecturer Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}
+
+model Education {
+  id          Int     @id @default(autoincrement())
+  degree      String
+  major       String
+  university  String
+  graduationYear Int
+  lecturerId  Int
+  lecturer    Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}
+
+model Experience {
+  id          Int     @id @default(autoincrement())
+  position    String
+  institution String
+  startDate   DateTime
+  endDate     DateTime?
+  lecturerId  Int
+  lecturer    Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}
+
+model Publication {
+  id         Int     @id @default(autoincrement())
+  title      String
+  journal    String
+  year       Int
+  doi        String?
+  lecturerId Int
+  lecturer   Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id            Int     @id @default(autoincrement())
+  title         String
+  fundingAgency String
+  budget        Float
+  duration      String
+  role          String
+  lecturerId    Int
+  lecturer      Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}
+
+model Award {
+  id          Int     @id @default(autoincrement())
+  title       String
+  year        Int
+  institution String
+  lecturerId  Int
+  lecturer    Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}
+
+model Course {
+  id          Int     @id @default(autoincrement())
+  courseCode  String
+  courseName  String
+  semester    String
+  lecturerId  Int
+  lecturer    Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+}

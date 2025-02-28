@@ -1,0 +1,4 @@
+# Prisma dan PostgreSQL Client
+npm install @prisma/client @next-auth/prisma-adapter
+npx prisma init
+npx prisma migrate dev --name init
